@@ -133,6 +133,7 @@ public class TwitterStreamProvider implements StreamsProvider, Serializable, Dat
             userstreamEndpoint.withFollowings(true);
             userstreamEndpoint.withUser(false);
             userstreamEndpoint.allReplies(false);
+            userstreamEndpoint.addPostParameter("stringify_friend_ids", "true");
             endpoint = userstreamEndpoint;
         }
         else if(config.getEndpoint().equals("sample") ) {
