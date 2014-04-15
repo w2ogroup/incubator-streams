@@ -2,7 +2,6 @@ package org.apache.streams.twitter.provider;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
-import com.jayway.jsonassert.JsonAssert;
 import org.apache.commons.lang.StringUtils;
 import org.apache.streams.twitter.pojo.*;
 import org.apache.streams.twitter.serializer.StreamsTwitterMapper;

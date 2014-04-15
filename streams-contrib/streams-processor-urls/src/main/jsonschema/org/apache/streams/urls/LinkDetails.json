@@ -68,6 +68,12 @@
         },
         "tookInMills": {
             "type": "integer"
+        },
+        "content": {
+            "type": "string"
+        },
+        "contentType": {
+            "type": "string"
         }
     }
 }

@@ -82,6 +82,10 @@
       "items": {
         "type" : "string"
       }
+    },
+    "extensions" : {
+      "type": "object",
+      "description": "Collection of annotations by processing modules"
     }
   },
   "links": [
