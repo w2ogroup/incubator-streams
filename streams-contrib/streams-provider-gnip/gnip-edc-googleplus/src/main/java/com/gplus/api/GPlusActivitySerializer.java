@@ -5,6 +5,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.streams.data.ActivitySerializer;
 import org.apache.streams.data.util.ActivityUtil;
 import org.apache.streams.gnip.powertrack.GnipActivityFixer;
+import org.apache.streams.jackson.StreamsJacksonMapper;
 import org.apache.streams.pojo.json.Activity;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class GPlusActivitySerializer implements ActivitySerializer<String> {
 
     @Override
     public String serialize(Activity deserialized) {
-        ObjectMapper jsonMapper = new ObjectMapper();
+        ObjectMapper jsonMapper = new StreamsJacksonMapper();
         String jsonString = new String();
         try{
             jsonString = jsonMapper.writeValueAsString(deserialized);
@@ -42,7 +43,7 @@ public class GPlusActivitySerializer implements ActivitySerializer<String> {
 
     @Override
     public Activity deserialize(String serialized) {
-        ObjectMapper jsonMapper = new ObjectMapper();
+        ObjectMapper jsonMapper = new StreamsJacksonMapper();
         JSONObject jsonObject = new JSONObject();
         JSONObject fixedObject = new JSONObject();
 

@@ -9,6 +9,7 @@ import org.apache.streams.core.StreamsDatum;
 import org.apache.streams.core.StreamsProcessor;
 import org.apache.streams.jackson.StreamsJacksonMapper;
 import org.apache.streams.pojo.json.Activity;
+import org.apache.streams.pojo.json.Link;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,14 +62,15 @@ public class LinkCrawlerProcessor implements StreamsProcessor
         }
         else throw new NotImplementedException();
 
-        List<String> outputLinks = activity.getLinks();
+        List<Link> outputLinks = activity.getLinks();
         // for each
-        for( String link : outputLinks ) {
+        for( Link link : outputLinks ) {
 
             System.out.println( "pulling " + link);
 
             try {
-                StreamsDatum outputDatum = crawlLink(link, entry);
+                LinkDetails linkDetails = mapper.convertValue(link, LinkDetails.class);
+                StreamsDatum outputDatum = crawlLink(linkDetails.getFinalURL(), entry);
                 if( outputDatum != null )
                     result.add(outputDatum);
             } catch (Exception e) {

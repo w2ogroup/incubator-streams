@@ -13,6 +13,7 @@ import org.apache.streams.jackson.StreamsJacksonMapper;
 import org.apache.streams.pojo.json.Activity;
 import org.apache.streams.pojo.json.ActivityObject;
 import org.apache.streams.pojo.json.Actor;
+import org.apache.streams.pojo.json.Link;
 import org.apache.streams.twitter.Url;
 import org.apache.streams.twitter.pojo.Tweet;
 import org.apache.streams.twitter.pojo.User;
@@ -110,11 +111,13 @@ public class TwitterJsonTweetActivitySerializer implements ActivitySerializer<St
         return actor;
     }
 
-    public static List<String> getLinks(Tweet tweet) {
-        List<String> links = Lists.newArrayList();
+    public static List<Link> getLinks(Tweet tweet) {
+        List<Link> links = Lists.newArrayList();
         if( tweet.getEntities().getUrls() != null ) {
             for (Url url : tweet.getEntities().getUrls()) {
-                links.add(url.getExpandedUrl());
+                Link link = new Link();
+                link.setAdditionalProperty("originalURL", url.getExpandedUrl());
+                links.add(link);
             }
         }
         else
