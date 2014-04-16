@@ -28,7 +28,6 @@
                 "javaInterfaces": ["java.io.Serializable"],
                 "properties": {
                     "id": {
-                        "ignore_malformed": false,
                         "type": "integer"
                     },
                     "id_str": {
@@ -53,7 +52,7 @@
                         "type": "array",
                         "items": [
                             {
-                                "type": "integer"
+                                "type": "number"
                             }
                         ]
                     }

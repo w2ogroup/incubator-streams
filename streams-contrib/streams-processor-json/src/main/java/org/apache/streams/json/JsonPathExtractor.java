@@ -23,8 +23,13 @@ import java.util.List;
  */
 public class JsonPathExtractor implements StreamsProcessor {
 
+    public JsonPathExtractor() {
+        System.out.println("creating JsonPathExtractor for nada");
+    }
+
     public JsonPathExtractor(String pathExpression) {
         this.pathExpression = pathExpression;
+        System.out.println("creating JsonPathExtractor for " + this.pathExpression);
     }
 
     private final static String STREAMS_ID = "JsonPathExtractor";
@@ -59,11 +64,16 @@ public class JsonPathExtractor implements StreamsProcessor {
         if( StringUtils.isNotEmpty(json)) {
 
             try {
-                Object readResult = JsonPath.read(json, pathExpression);
+                Object readResult = jsonPath.read(json);
 
                 if (readResult instanceof String) {
                     String match = (String) readResult;
                     StreamsDatum matchDatum = new StreamsDatum(match);
+                    result.add(matchDatum);
+                } else if (readResult instanceof JSONObject) {
+                    JSONObject match = (JSONObject) readResult;
+                    ObjectNode objectNode = mapper.readValue(mapper.writeValueAsString(match), ObjectNode.class);
+                    StreamsDatum matchDatum = new StreamsDatum(objectNode);
                     result.add(matchDatum);
                 } else if (readResult instanceof JSONArray) {
                     JSONArray array = (JSONArray) readResult;
@@ -85,6 +95,7 @@ public class JsonPathExtractor implements StreamsProcessor {
                 }
 
             } catch( Exception e ) {
+                e.printStackTrace();
                 LOGGER.warn(e.getMessage());
             }
 
@@ -96,7 +107,8 @@ public class JsonPathExtractor implements StreamsProcessor {
 
     @Override
     public void prepare(Object configurationObject) {
-        jsonPath = JsonPath.compile(pathExpression);
+        if( configurationObject instanceof String )
+            jsonPath = JsonPath.compile((String)(configurationObject));
         mapper.registerModule(new JsonOrgModule());
     }
 

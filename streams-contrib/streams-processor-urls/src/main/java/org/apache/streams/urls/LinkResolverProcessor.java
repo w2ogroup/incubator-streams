@@ -61,13 +61,21 @@ public class LinkResolverProcessor implements StreamsProcessor
 
         for( int i = 0; i < activity.getLinks().size(); i++ )
         {
-            Link linkObject = activity.getLinks().get(i);
+            Object linkObject = activity.getLinks().get(i);
+            String linkUrl;
             try {
-                String originalUrl = (String) linkObject.getAdditionalProperties().get("originalURL");
-                LinkDetails details = resolve(originalUrl);
+                if( linkObject instanceof String )
+                    linkUrl = (String) linkObject;
+                else if( linkObject instanceof Link )
+                    linkUrl = (String)((Link)linkObject).getAdditionalProperties().get("originalURL");
+                else {
+                    LOGGER.warn("can't locate url in doc");
+                    return result;
+                }
+                LinkDetails details = resolve(linkUrl);
                 if( details != null ) {
-                    linkObject = mapper.convertValue(details, Link.class);
-                    activity.getLinks().set(i, linkObject);
+                    Link linkOutObj = mapper.convertValue(details, Link.class);
+                    activity.getLinks().set(i, linkOutObj);
                 } else {
                     activity.getLinks().remove(i);
                 }

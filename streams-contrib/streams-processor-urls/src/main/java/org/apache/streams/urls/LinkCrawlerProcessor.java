@@ -62,21 +62,30 @@ public class LinkCrawlerProcessor implements StreamsProcessor
         }
         else throw new NotImplementedException();
 
-        List<Link> outputLinks = activity.getLinks();
-        // for each
-        for( Link link : outputLinks ) {
-
-            System.out.println( "pulling " + link);
-
+        for( int i = 0; i < activity.getLinks().size(); i++ )
+        {
+            Object linkObject = activity.getLinks().get(i);
+            String linkUrl;
             try {
-                LinkDetails linkDetails = mapper.convertValue(link, LinkDetails.class);
-                StreamsDatum outputDatum = crawlLink(linkDetails.getFinalURL(), entry);
-                if( outputDatum != null )
-                    result.add(outputDatum);
+                if( linkObject instanceof String )
+                    linkUrl = (String) linkObject;
+                else if( linkObject instanceof Link )
+                    linkUrl = (String)((Link)linkObject).getAdditionalProperties().get("originalURL");
+                else {
+                    LOGGER.warn("can't locate url in doc");
+                    return result;
+                }
+                LinkDetails details = crawlLink(linkUrl, entry);
+                if( details != null ) {
+                    Link linkOutObj = mapper.convertValue(details, Link.class);
+                    activity.getLinks().set(i, linkOutObj);
+                } else {
+                    activity.getLinks().remove(i);
+                }
             } catch (Exception e) {
-                //drop unexpandable links
-                LOGGER.debug("Failed to expand link : {}", link);
-                LOGGER.debug("Excpetion expanding link : {}", e);
+                e.printStackTrace();
+                LOGGER.warn(e.getMessage());
+                activity.getLinks().remove(i);
             }
 
         }
@@ -84,22 +93,11 @@ public class LinkCrawlerProcessor implements StreamsProcessor
         return result;
     }
 
-    private StreamsDatum crawlLink(String link, StreamsDatum input) {
+    private LinkDetails crawlLink(String link, StreamsDatum input) {
 
         LinkCrawler crawler = new LinkCrawler((String)link);
         crawler.run();
-        StreamsDatum datum = null;
-        if(input.getId() == null)
-            try {
-                datum = new StreamsDatum(this.mapper.writeValueAsString(crawler.getLinkDetails()));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-                return null;
-            }
-        datum.setSequenceid(input.getSequenceid());
-        datum.setMetadata(input.getMetadata());
-        datum.setTimestamp(input.getTimestamp());
-        return datum;
+        return crawler.getLinkDetails();
 
     }
 

@@ -38,7 +38,10 @@ public class StreamsProcessDatumExec extends EvalFunc<DataBag> {
         String[] constructorArgs = new String[execArgs.length-1];
         ArrayUtils.remove(execArgs, 0);
         ArrayUtils.addAll(constructorArgs, execArgs);
-        streamsProcessor = StreamsComponentFactory.getProcessorInstance(Class.forName(classFullName));
+        if( constructorArgs.length == 0 )
+            streamsProcessor = StreamsComponentFactory.getProcessorInstance(Class.forName(classFullName));
+        else
+            streamsProcessor = StreamsComponentFactory.getProcessorInstance(Class.forName(classFullName), constructorArgs);
         streamsProcessor.prepare(null);
     }
 

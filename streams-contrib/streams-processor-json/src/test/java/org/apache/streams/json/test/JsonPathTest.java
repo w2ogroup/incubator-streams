@@ -51,8 +51,8 @@ public class JsonPathTest {
     @Test
     public void test1()
     {
-        JsonPathExtractor extractor = new JsonPathExtractor("$.store.book[*].author");
-        extractor.prepare(null);
+        JsonPathExtractor extractor = new JsonPathExtractor();
+        extractor.prepare("$.store.book[*].author");
         List<StreamsDatum> result = extractor.process(new StreamsDatum(testJson));
         assertThat(result.size(), is(2));
         assertTrue(result.get(0).getDocument() instanceof String);
@@ -62,8 +62,8 @@ public class JsonPathTest {
     @Test
     public void test2()
     {
-        JsonPathExtractor extractor = new JsonPathExtractor("$.store.book[?(@.category == 'reference')]");
-        extractor.prepare(null);
+        JsonPathExtractor extractor = new JsonPathExtractor();
+        extractor.prepare("$.store.book[?(@.category == 'reference')]");
         List<StreamsDatum> result = extractor.process(new StreamsDatum(testJson));
         assertThat(result.size(), is(1));
         assertTrue(result.get(0).getDocument() instanceof ObjectNode);
@@ -72,8 +72,8 @@ public class JsonPathTest {
     @Test
     public void test3()
     {
-        JsonPathExtractor extractor = new JsonPathExtractor("$.store.book[?(@.price > 10)]");
-        extractor.prepare(null);
+        JsonPathExtractor extractor = new JsonPathExtractor();
+        extractor.prepare("$.store.book[?(@.price > 10)]");
         List<StreamsDatum> result = extractor.process(new StreamsDatum(testJson));
         assertThat(result.size(), is(1));
         assertTrue(result.get(0).getDocument() instanceof ObjectNode);
@@ -82,8 +82,8 @@ public class JsonPathTest {
     @Test
     public void test4()
     {
-        JsonPathExtractor extractor = new JsonPathExtractor("$.store.book[?(@.isbn)]");
-        extractor.prepare(null);
+        JsonPathExtractor extractor = new JsonPathExtractor();
+        extractor.prepare("$.store.book[?(@.isbn)]");
         List<StreamsDatum> result = extractor.process(new StreamsDatum(testJson));
         assertThat(result.size(), is(1));
         assertTrue(result.get(0).getDocument() instanceof ObjectNode);

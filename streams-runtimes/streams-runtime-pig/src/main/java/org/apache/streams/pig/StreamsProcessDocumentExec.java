@@ -20,6 +20,7 @@ import org.apache.streams.jackson.StreamsJacksonMapper;
 import org.apache.streams.pojo.json.Activity;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -38,17 +39,26 @@ public class StreamsProcessDocumentExec extends EvalFunc<String> {
     public StreamsProcessDocumentExec(String... execArgs) throws ClassNotFoundException{
         System.out.println("A");
         Preconditions.checkNotNull(execArgs);
+        System.out.println(Arrays.toString(execArgs));
         System.out.println("B");
         Preconditions.checkArgument(execArgs.length > 0);
+        System.out.println(execArgs.length);
+        String classFullName = execArgs[0];
         System.out.println("C");
-        String processorFullName = execArgs[0];
-        System.out.println("D");
-        Preconditions.checkNotNull(processorFullName);
+        Preconditions.checkNotNull(classFullName);
         System.out.println("E");
-        streamsProcessor = StreamsComponentFactory.getProcessorInstance(Class.forName(processorFullName));
+        streamsProcessor = StreamsComponentFactory.getProcessorInstance(Class.forName(classFullName));
+        if( execArgs.length == 1 ) {
+            System.out.println("PREPARE NULL");
+            streamsProcessor.prepare(null);
+        } else if( execArgs.length == 2 ) {
+            System.out.println("PREPARE 1 " + execArgs[1]);
+            streamsProcessor.prepare(execArgs[1]);
+        } else {
+            System.out.println("PREPARE ARRAY " + Arrays.toString(execArgs));
+            streamsProcessor.prepare(execArgs);
+        }
         System.out.println("F");
-        streamsProcessor.prepare(null);
-        System.out.println("G");
     }
 
     @Override
@@ -64,13 +74,13 @@ public class StreamsProcessDocumentExec extends EvalFunc<String> {
 
         Preconditions.checkNotNull(document);
 
-        System.out.println(document);
+        // System.out.println(document);
 
         StreamsDatum entry = new StreamsDatum(document);
 
         Preconditions.checkNotNull(entry);
 
-        System.out.println(entry);
+        // System.out.println(entry);
 
         List<StreamsDatum> resultSet = streamsProcessor.process(entry);
 
