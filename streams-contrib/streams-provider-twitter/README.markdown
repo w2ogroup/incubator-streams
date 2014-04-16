@@ -2,47 +2,30 @@ streams-provider-twitter
 
 Purpose
 
-  Module connects to the twitter streaming API, collects events, and passes each message downstream.
+  Module connects to twitter APIs, collects events, and passes each message downstream.
 
-Options
+EndPoints
 
-  Sample - supported, tested
-  Firehose - supported, not tested
-  Site - not currently supported
+  * Timeline - supported, tested
+  * Sample - supported, tested
+  * Firehose - supported, not tested
+  * Site - not currently supported
 
-Capabilities
+Normalization
 
-  Validation
+  Optionally, module can convert messages to ActivityStreams format
 
-    Optionally, module will validate each message
+  * Tweets [TwitterJsonTweetActivitySerializer]
+  * Retweets [TwitterJsonRetweetActivitySerializer]
 
-  Simplification
+[TwitterJsonTweetActivitySerializer]: TwitterJsonTweetActivitySerializer
 
-    Optionally, module can output messages as basic text
+  TwitterJsonTweetActivitySerializer.class serializes tweets like this:
 
-  Normalization
+  ![TwitterJsonTweetActivitySerializer.png](TwitterJsonTweetActivitySerializer.png)
 
-    Optionally, module can output messages as other json objects such as Activity
+[TwitterJsonRetweetActivitySerializer]: TwitterJsonRetweetActivitySerializer
 
-  Deletion
+  TwitterJsonRetweetActivitySerializer.class serializes retweets like this:
 
-    By default, module will submit delete the object from each directly connected persist step (not implemented)
-
-Run-modes
-
-  Standalone
-
-    Runs in a java process.
-    Writes to standard out.
-
-    Placeholder for how
-      Configure via property file
-      Configure via command line
-
-  Storm
-
-    Runs as a spout.
-
-    Placeholder for how
-      Configure via property file
-      Configure via command line
+  ![TwitterJsonRetweetActivitySerializer.png](TwitterJsonRetweetActivitySerializer.png)
