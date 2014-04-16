@@ -4,8 +4,10 @@ import com.datasift.client.stream.Interaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.streams.core.StreamsDatum;
 import org.apache.streams.datasift.Datasift;
-import org.apache.streams.datasift.serializer.DatasiftActivitySerializer;
+import org.apache.streams.datasift.serializer.DatasiftInteractionActivitySerializer;
+import org.apache.streams.datasift.serializer.DatasiftJsonActivitySerializer;
 import org.apache.streams.datasift.twitter.Twitter;
+import org.apache.streams.exceptions.ActivitySerializerException;
 import org.apache.streams.pojo.json.Activity;
 import org.apache.streams.twitter.pojo.Tweet;
 import org.slf4j.Logger;
@@ -29,7 +31,7 @@ public class DatasiftEventProcessor implements Runnable {
     private Class inClass;
     private Class outClass;
 
-    private DatasiftActivitySerializer datasiftInteractionActivitySerializer = new DatasiftActivitySerializer();
+    private DatasiftJsonActivitySerializer datasiftJsonActivitySerializer = new DatasiftJsonActivitySerializer();
 
     public final static String TERMINATE = new String("TERMINATE");
 
@@ -58,13 +60,20 @@ public class DatasiftEventProcessor implements Runnable {
                     break;
                 }
 
-                Thread.sleep(new Random().nextInt(100));
-
-                org.apache.streams.datasift.Datasift datasift = mapper.convertValue(item, Datasift.class);
+                String json;
+                org.apache.streams.datasift.Datasift datasift;
+                if(item instanceof String)
+                    json = (String)item;
+                if( item instanceof Interaction) {
+                    datasift = mapper.convertValue(item, Datasift.class);
+                    json = mapper.writeValueAsString(datasift);
+                } else {
+                    throw new ActivitySerializerException("unrecognized type");
+                }
 
                 // if the target is string, just pass-through
                 if( String.class.equals(outClass)) {
-                    outQueue.offer(new StreamsDatum(datasift.toString()));
+                    outQueue.offer(new StreamsDatum(json));
 
                 }
                 else if( Interaction.class.equals(outClass))
@@ -89,7 +98,7 @@ public class DatasiftEventProcessor implements Runnable {
                     // convert to desired format
                     Interaction entry = (Interaction) item;
                     if( entry != null ) {
-                        Activity out = datasiftInteractionActivitySerializer.deserialize(datasift);
+                        Activity out = datasiftJsonActivitySerializer.deserialize(json);
 
                         if( out != null )
                             outQueue.offer(new StreamsDatum(out));

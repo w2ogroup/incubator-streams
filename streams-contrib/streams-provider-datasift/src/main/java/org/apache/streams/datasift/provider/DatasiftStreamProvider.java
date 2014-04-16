@@ -44,7 +44,7 @@ public class DatasiftStreamProvider implements StreamsProvider {
         this.config = config;
     }
 
-    protected BlockingQueue inQueue = new LinkedBlockingQueue<Interaction>(10000);
+    protected BlockingQueue inQueue = new LinkedBlockingQueue<Interaction>(1000);
 
     protected volatile Queue<StreamsDatum> providerQueue = new ConcurrentLinkedQueue<StreamsDatum>();
 
@@ -176,7 +176,7 @@ public class DatasiftStreamProvider implements StreamsProvider {
 
             inQueue.offer(i);
 
-            if (count.incrementAndGet() % 1000 == 0) {
+            if (count.incrementAndGet() % 100 == 0) {
                 LOGGER.info("Processed {}:\n " + count.get());
 
             }
