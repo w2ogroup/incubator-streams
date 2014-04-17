@@ -1,0 +1,206 @@
+{
+  "title": "MoreoverXmlActivitySerializer",
+  "id": 1,
+  "formatVersion": 2,
+  "ideas": {
+    "1": {
+      "title": "activity",
+      "id": 2,
+      "ideas": {
+        "1": {
+          "title": "extensions",
+          "id": 4,
+          "ideas": {
+            "1": {
+              "title": "moreover",
+              "id": 5
+            }
+          }
+        },
+        "2": {
+          "title": "actor",
+          "id": 15,
+          "ideas": {
+            "1": {
+              "title": "id",
+              "id": 16
+            },
+            "2": {
+              "title": "icon",
+              "id": 27
+            },
+            "0.5": {
+              "title": "displayName",
+              "id": 17
+            }
+          }
+        },
+        "0.5": {
+          "title": "provider\nmoreover",
+          "id": 13
+        },
+        "0.25": {
+          "title": "content",
+          "id": 19
+        },
+        "0.375": {
+          "title": "published",
+          "id": 20,
+          "ideas": {}
+        },
+        "0.4375": {
+          "title": "url",
+          "id": 22
+        },
+        "0.75": {
+          "title": "verb\npost",
+          "id": 28
+        },
+        "0.125": {
+          "title": "id",
+          "id": 31
+        }
+      }
+    },
+    "-1": {
+      "title": "article",
+      "id": 3,
+      "ideas": {
+        "1": {
+          "title": "content",
+          "id": 6
+        },
+        "2": {
+          "title": "publishedDate",
+          "id": 7
+        },
+        "3": {
+          "title": "url",
+          "id": 8
+        },
+        "4": {
+          "title": "author",
+          "id": 9,
+          "ideas": {
+            "1": {
+              "title": "name",
+              "id": 10
+            },
+            "11": {
+              "title": "publishingPlatform",
+              "id": 11,
+              "ideas": {
+                "1": {
+                  "title": "userId",
+                  "id": 12
+                }
+              }
+            }
+          }
+        },
+        "5": {
+          "title": "source",
+          "id": 23,
+          "ideas": {
+            "1": {
+              "title": "feed",
+              "id": 24,
+              "ideas": {
+                "1": {
+                  "title": "imageUrl",
+                  "id": 25
+                }
+              }
+            }
+          }
+        },
+        "0.5": {
+          "title": "id",
+          "id": 30
+        }
+      }
+    }
+  },
+  "links": [
+    {
+      "ideaIdFrom": 3,
+      "ideaIdTo": 5,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 10,
+      "ideaIdTo": 17,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 12,
+      "ideaIdTo": 16,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 6,
+      "ideaIdTo": 19,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 7,
+      "ideaIdTo": 20,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 8,
+      "ideaIdTo": 22,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 25,
+      "ideaIdTo": 27,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 30,
+      "ideaIdTo": 31,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    }
+  ]
+}
