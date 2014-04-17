@@ -1,0 +1,335 @@
+{
+  "title": "SysomosXmlJsonSerializer",
+  "id": 1,
+  "formatVersion": 2,
+  "ideas": {
+    "1": {
+      "title": "sysomos",
+      "id": 2,
+      "ideas": {
+        "1": {
+          "title": "tweetHbLink",
+          "id": 25,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "2": {
+          "title": "twitterFollowers",
+          "id": 26,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "3": {
+          "title": "twitterFollowing",
+          "id": 27,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "4": {
+          "title": "docid",
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          },
+          "id": 28
+        },
+        "5": {
+          "title": "mediaType",
+          "id": 29,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "6": {
+          "title": "time",
+          "id": 30,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "7": {
+          "title": "title",
+          "id": 31,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "8": {
+          "title": "content",
+          "id": 32,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "9": {
+          "title": "link",
+          "id": 33,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "10": {
+          "title": "gender",
+          "id": 34,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "11": {
+          "title": "location",
+          "ideas": {
+            "1": {
+              "title": "country",
+              "id": 36
+            },
+            "2": {
+              "title": "locationString",
+              "id": 37
+            }
+          },
+          "id": 35,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "12": {
+          "title": "influenceLevel",
+          "id": 38,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "13": {
+          "title": "sentiment",
+          "id": 39,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "14": {
+          "title": "tweetid",
+          "id": 40,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "15": {
+          "title": "tweetJsonLink",
+          "id": 41,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "25": {
+          "title": "tags",
+          "id": 42,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          },
+          "ideas": {
+            "1": {
+              "title": "\"$displayName\": \"$value\"\nonly where systemType != SYSTEM",
+              "id": 51,
+              "attr": {
+                "style": {
+                  "background": "#00ffff"
+                }
+              }
+            }
+          }
+        },
+        "26": {
+          "title": "systemTags",
+          "id": 49,
+          "ideas": {
+            "1": {
+              "title": "\"$displayName\": \"$value\"only where systemType == SYSTEM",
+              "attr": {
+                "style": {
+                  "background": "#00ffff"
+                }
+              },
+              "id": 52
+            }
+          }
+        }
+      }
+    },
+    "-1": {
+      "title": "beatResponse",
+      "id": 3,
+      "ideas": {
+        "3": {
+          "title": "beat",
+          "id": 7,
+          "ideas": {
+            "2": {
+              "title": "docid",
+              "id": 5,
+              "attr": {
+                "style": {
+                  "background": "#E0E0E0"
+                }
+              }
+            },
+            "3": {
+              "title": "mediaType",
+              "id": 8
+            },
+            "4": {
+              "title": "time",
+              "id": 9
+            },
+            "5": {
+              "title": "title",
+              "id": 10
+            },
+            "6": {
+              "title": "content",
+              "id": 11
+            },
+            "7": {
+              "title": "link",
+              "id": 12
+            },
+            "8": {
+              "title": "gender",
+              "id": 13
+            },
+            "9": {
+              "title": "location",
+              "id": 14,
+              "ideas": {
+                "1": {
+                  "title": "country",
+                  "id": 15
+                },
+                "2": {
+                  "title": "locationString",
+                  "id": 16
+                }
+              }
+            },
+            "10": {
+              "title": "influenceLevel",
+              "id": 17
+            },
+            "11": {
+              "title": "sentiment",
+              "id": 18
+            },
+            "12": {
+              "title": "tweetid",
+              "id": 19
+            },
+            "13": {
+              "title": "tweetJsonLink",
+              "id": 20
+            },
+            "14": {
+              "title": "tweetHbLink",
+              "id": 21
+            },
+            "15": {
+              "title": "twitterFollowers",
+              "id": 22
+            },
+            "16": {
+              "title": "twitterFollowing",
+              "id": 24
+            },
+            "26": {
+              "title": "tag",
+              "id": 4,
+              "attr": {
+                "style": {
+                  "background": "transparent"
+                }
+              },
+              "ideas": {
+                "1": {
+                  "title": "value",
+                  "id": 46
+                },
+                "2": {
+                  "title": "systemType",
+                  "id": 48
+                },
+                "0.5": {
+                  "title": "displayName",
+                  "id": 47
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "links": [
+    {
+      "ideaIdFrom": 3,
+      "ideaIdTo": 2,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 4,
+      "ideaIdTo": 42,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 4,
+      "ideaIdTo": 49,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    }
+  ]
+}

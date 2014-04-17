@@ -50,7 +50,7 @@
                                         <xs:element type="xs:anyURI" name="tweetJsonLink" minOccurs="0"/>
                                         <xs:element type="xs:anyURI" name="tweetHbLink" minOccurs="0"/>
                                         <xs:element type="xs:string" name="twitterFollowers" minOccurs="0"/>
-                                        <xs:element type="xs:string" name="twitterFollowing" minOccurs="0"/>
+                                        <xs:element type="xs:string" name=" " minOccurs="0"/>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>

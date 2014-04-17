@@ -1,0 +1,316 @@
+{
+  "title": "SysomosJsonActivitySerializer",
+  "id": 1,
+  "formatVersion": 2,
+  "ideas": {
+    "1": {
+      "title": "activity",
+      "id": 53,
+      "ideas": {
+        "1": {
+          "title": "id",
+          "id": 54
+        },
+        "2": {
+          "title": "published",
+          "id": 55
+        },
+        "3": {
+          "title": "provider\nsysomos:$.mediaType",
+          "id": 58
+        },
+        "4": {
+          "title": "extensions",
+          "id": 59,
+          "ideas": {
+            "1": {
+              "title": "sysomos",
+              "id": 60
+            }
+          }
+        },
+        "5": {
+          "title": "url",
+          "id": 65
+        },
+        "0.5": {
+          "title": "content",
+          "id": 56
+        },
+        "0.25": {
+          "title": "title",
+          "id": 57
+        },
+        "0.125": {
+          "title": "actor",
+          "id": 61,
+          "ideas": {
+            "1": {
+              "title": "id",
+              "id": 62,
+              "ideas": {}
+            }
+          }
+        }
+      }
+    },
+    "-10": {
+      "title": "sysomos",
+      "id": 2,
+      "ideas": {
+        "2": {
+          "title": "twitterFollowers",
+          "id": 26,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "3": {
+          "title": "twitterFollowing",
+          "id": 27,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "4": {
+          "title": "docid",
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          },
+          "id": 28
+        },
+        "5": {
+          "title": "mediaType",
+          "id": 29,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "6": {
+          "title": "time",
+          "id": 30,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "7": {
+          "title": "title",
+          "id": 31,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "8": {
+          "title": "content",
+          "id": 32,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "9": {
+          "title": "link",
+          "id": 33,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "10": {
+          "title": "gender",
+          "id": 34,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "11": {
+          "title": "location",
+          "ideas": {
+            "1": {
+              "title": "country",
+              "id": 36
+            },
+            "2": {
+              "title": "locationString",
+              "id": 37
+            }
+          },
+          "id": 35,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "12": {
+          "title": "influenceLevel",
+          "id": 38,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "13": {
+          "title": "sentiment",
+          "id": 39,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "14": {
+          "title": "tweetid",
+          "id": 40,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "15": {
+          "title": "tweetJsonLink",
+          "id": 41,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "3.5": {
+          "title": "tweetHbLink",
+          "id": 25,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          }
+        },
+        "3.75": {
+          "title": "tags",
+          "id": 42,
+          "attr": {
+            "style": {
+              "background": "#E0E0E0"
+            }
+          },
+          "ideas": {
+            "1": {
+              "title": "FBID",
+              "id": 68
+            }
+          }
+        }
+      }
+    }
+  },
+  "links": [
+    {
+      "ideaIdFrom": 4,
+      "ideaIdTo": 42,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 28,
+      "ideaIdTo": 54,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 30,
+      "ideaIdTo": 55,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 32,
+      "ideaIdTo": 56,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 31,
+      "ideaIdTo": 57,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 2,
+      "ideaIdTo": 60,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 33,
+      "ideaIdTo": 65,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 29,
+      "ideaIdTo": 58,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    },
+    {
+      "ideaIdFrom": 68,
+      "ideaIdTo": 62,
+      "attr": {
+        "style": {
+          "color": "#FF0000",
+          "lineStyle": "dashed"
+        }
+      }
+    }
+  ]
+}
