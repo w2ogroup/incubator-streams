@@ -6,13 +6,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.streams.data.ActivitySerializer;
 import org.apache.streams.datasift.Datasift;
-import org.apache.streams.datasift.interaction.Interaction;
+import org.apache.streams.datasift.interaction.*;
 import org.apache.streams.pojo.json.*;
-import org.apache.streams.twitter.serializer.StreamsTwitterMapper;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -47,7 +47,7 @@ public class DatasiftInteractionActivitySerializer implements ActivitySerializer
     @Override
     public Activity deserialize(String serialized) {
 
-        mapper = StreamsTwitterMapper.getInstance();
+        mapper = StreamsDatasiftMapper.getInstance();
 
         Datasift datasift = null;
 
@@ -67,6 +67,7 @@ public class DatasiftInteractionActivitySerializer implements ActivitySerializer
             return activity;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("Unable to deserialize", e);
         }
 
@@ -91,7 +92,7 @@ public class DatasiftInteractionActivitySerializer implements ActivitySerializer
 
     public static Provider buildProvider(Interaction interaction) {
         Provider provider = new Provider();
-        provider.setId("id:providers:datasift");
+        provider.setId(interaction.getType());
         return provider;
     }
 
@@ -133,14 +134,27 @@ public class DatasiftInteractionActivitySerializer implements ActivitySerializer
 
     public static Actor buildActor(Interaction interaction) {
         Actor actor = new Actor();
-        actor.setId(formatId(interaction.getAuthor().getId().toString()));
-        actor.setDisplayName(interaction.getAuthor().getUsername());
-        Image image = new Image();
-        image.setUrl(interaction.getAuthor().getAvatar());
-        actor.setImage(image);
-        if (interaction.getAuthor().getLink()!=null){
-            actor.setUrl(interaction.getAuthor().getLink());
+        org.apache.streams.datasift.interaction.Author author = interaction.getAuthor();
+        if( author != null ) {
+            if( author.getId() != null )
+                actor.setId(formatId(
+                    Optional.fromNullable(
+                            author.getId().toString())
+                            .orNull()
+            ));
+            actor.setDisplayName(
+                    Optional.fromNullable(interaction.getAuthor().getUsername()).orNull()
+            );
+            if( author.getAvatar() != null ) {
+                Image image = new Image();
+                image.setUrl(interaction.getAuthor().getAvatar());
+                actor.setImage(image);
+            }
+            if (interaction.getAuthor().getLink()!=null){
+                actor.setUrl(interaction.getAuthor().getLink());
+            }
         }
+
         return actor;
     }
 

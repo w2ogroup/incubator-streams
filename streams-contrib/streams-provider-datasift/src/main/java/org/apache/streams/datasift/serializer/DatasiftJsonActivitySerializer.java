@@ -44,11 +44,14 @@ public class DatasiftJsonActivitySerializer implements ActivitySerializer<String
         Class documentSubType = DatasiftEventClassifier.detectClass(serialized);
 
         Activity activity;
-        if( documentSubType == Twitter.class )
-            activity = datasiftTwitterActivitySerializer.deserialize(serialized);
-        else if( documentSubType == Interaction.class )
+
+        // AT THE MOMENT USING ONLY INTERACTION SERIALIZER
+
+//        if( documentSubType == Twitter.class )
+//            activity = datasiftTwitterActivitySerializer.deserialize(serialized);
+//        else if( documentSubType == Interaction.class )
             activity = datasiftInteractionActivitySerializer.deserialize(serialized);
-        else throw new ActivitySerializerException("unrecognized type");
+//        else throw new ActivitySerializerException("unrecognized type");
 
         return activity;
     }
@@ -58,18 +61,12 @@ public class DatasiftJsonActivitySerializer implements ActivitySerializer<String
         throw new NotImplementedException();
     }
 
-    public static Provider getProvider() {
-        Provider provider = new Provider();
-        provider.setId("id:providers:datasift");
-        return provider;
-    }
-
-    public static void addTwitterExtension(Activity activity, ObjectNode event) {
+    public static void addDatasiftExtension(Activity activity, ObjectNode event) {
         Map<String, Object> extensions = org.apache.streams.data.util.ActivityUtil.ensureExtensions(activity);
         extensions.put("datasift", event);
     }
 
     public static String formatId(String... idparts) {
-        return Joiner.on(":").join(Lists.asList("id:twitter", idparts));
+        return Joiner.on(":").join(Lists.asList("id:datasift", idparts));
     }
 }

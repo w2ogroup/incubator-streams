@@ -26,7 +26,7 @@ public class DatasiftTwitterActivitySerializer extends DatasiftInteractionActivi
 
     public Activity convert(Datasift event) {
         Activity activity = super.convert(event);
-        activity.getExtensions().setAdditionalProperty("twitter", event.getTwitter());
+        activity.getExtensions().setAdditionalProperty("datasift", event.getTwitter());
         return activity;
     }
 
