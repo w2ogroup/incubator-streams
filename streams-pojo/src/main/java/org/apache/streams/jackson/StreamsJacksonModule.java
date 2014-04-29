@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
+import java.util.Map;
+
 /**
  * Created by sblackmon on 3/27/14.
  */
@@ -16,6 +18,9 @@ public class StreamsJacksonModule extends SimpleModule {
 
         addSerializer(Period.class, new StreamsPeriodSerializer(Period.class));
         addDeserializer(Period.class, new StreamsPeriodDeserializer(Period.class));
+
+        addSerializer(Map.class, new StreamsMapSerializer(Map.class));
+
     }
 
 

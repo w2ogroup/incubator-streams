@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConsolePersistWriter implements StreamsPersistWriter {
 
+    public final static String STREAMS_ID = "ConsolePersistWriter";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsolePersistWriter.class);
 
     protected volatile Queue<StreamsDatum> persistQueue;

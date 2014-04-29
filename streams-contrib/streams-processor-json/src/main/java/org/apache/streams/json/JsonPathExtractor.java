@@ -24,7 +24,7 @@ import java.util.List;
 public class JsonPathExtractor implements StreamsProcessor {
 
     public JsonPathExtractor() {
-        System.out.println("creating JsonPathExtractor for nada");
+        System.out.println("creating JsonPathExtractor");
     }
 
     public JsonPathExtractor(String pathExpression) {
@@ -85,8 +85,7 @@ public class JsonPathExtractor implements StreamsProcessor {
                             StreamsDatum matchDatum = new StreamsDatum(match);
                             result.add(matchDatum);
                         } else if ( item instanceof JSONObject ) {
-                            ObjectNode objectNode = mapper.readValue(mapper.writeValueAsString(item), ObjectNode.class);
-                            StreamsDatum matchDatum = new StreamsDatum(objectNode);
+                            StreamsDatum matchDatum = new StreamsDatum(item);
                             result.add(matchDatum);
                         }
                     }
@@ -109,6 +108,7 @@ public class JsonPathExtractor implements StreamsProcessor {
     public void prepare(Object configurationObject) {
         if( configurationObject instanceof String )
             jsonPath = JsonPath.compile((String)(configurationObject));
+
         mapper.registerModule(new JsonOrgModule());
     }
 

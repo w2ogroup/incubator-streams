@@ -82,7 +82,7 @@ public class TwitterJsonTweetActivitySerializer implements ActivitySerializer<St
         activity.setProvider(getProvider());
         activity.setTitle("");
         activity.setContent(tweet.getText());
-        activity.setUrl("http://twitter.com/" + tweet.getIdStr());
+        activity.setUrl("http://twitter.com/" + tweet.getUser().getIdStr() + "/status/" + tweet.getIdStr());
         activity.setLinks(getLinks(tweet));
 
         addTwitterExtension(activity, mapper.convertValue(tweet, ObjectNode.class));
@@ -132,12 +132,6 @@ public class TwitterJsonTweetActivitySerializer implements ActivitySerializer<St
     public static void addLocationExtension(Activity activity, Tweet tweet) {
         Map<String, Object> extensions = ensureExtensions(activity);
         Map<String, Object> location = new HashMap<String, Object>();
-        location.put("id", formatId(
-                Optional.fromNullable(
-                        tweet.getIdStr())
-                        .or(Optional.of(tweet.getId().toString()))
-                        .orNull()
-        ));
         location.put("coordinates", tweet.getCoordinates());
         extensions.put("location", location);
     }

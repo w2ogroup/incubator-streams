@@ -37,4 +37,20 @@ public class ComponentUtils {
         return result;
     }
 
+    public static Object pollUntilObjectNotNull(Queue queue) {
+
+        Object result = null;
+        do {
+            Thread.yield();
+            synchronized( ComponentUtils.class ) {
+                try {
+                    result = (Object) queue.remove();
+                } catch( Exception e ) {}
+            }
+        }
+        while( result == null );
+
+        return result;
+    }
+
 }

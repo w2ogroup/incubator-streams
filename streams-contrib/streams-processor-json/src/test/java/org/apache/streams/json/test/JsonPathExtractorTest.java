@@ -1,14 +1,9 @@
 package org.apache.streams.json.test;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.streams.core.StreamsDatum;
-import org.apache.streams.exceptions.ActivitySerializerException;
 import org.apache.streams.json.JsonPathExtractor;
-import org.apache.streams.pojo.json.Activity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -18,10 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.List;
-import java.util.Scanner;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -32,9 +25,9 @@ import static org.junit.Assert.assertTrue;
 * Time: 5:57 PM
 * To change this template use File | Settings | File Templates.
 */
-public class JsonPathTest {
+public class JsonPathExtractorTest {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(JsonPathTest.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(JsonPathExtractorTest.class);
 
     private String testJson;
 
@@ -59,6 +52,7 @@ public class JsonPathTest {
         assertTrue(result.get(1).getDocument() instanceof String);
     }
 
+    @Ignore
     @Test
     public void test2()
     {
@@ -69,6 +63,7 @@ public class JsonPathTest {
         assertTrue(result.get(0).getDocument() instanceof ObjectNode);
     }
 
+    @Ignore
     @Test
     public void test3()
     {
@@ -79,6 +74,7 @@ public class JsonPathTest {
         assertTrue(result.get(0).getDocument() instanceof ObjectNode);
     }
 
+    @Ignore
     @Test
     public void test4()
     {

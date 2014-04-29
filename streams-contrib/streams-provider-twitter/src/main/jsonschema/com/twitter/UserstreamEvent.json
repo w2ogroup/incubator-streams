@@ -10,9 +10,23 @@
         },
         "event_type": {
             "type": "string",
-            "items": {
-                "type": "integer"
-            }
+            "enum" : [
+                "access_revoked",
+                "block",
+                "unblock",
+                "favorite",
+                "unfavorite",
+                "follow",
+                "unfollow",
+                "list_created",
+                "list_destroyed",
+                "list_updated",
+                "list_member_added",
+                "list_member_removed",
+                "list_user_subscribed",
+                "list_user_unsubscribed",
+                "user_update"
+            ]
         },
         "source": {
             "type": "string",

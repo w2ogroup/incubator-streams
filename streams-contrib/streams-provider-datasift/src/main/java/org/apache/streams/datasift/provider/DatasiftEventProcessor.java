@@ -72,6 +72,7 @@ public class DatasiftEventProcessor implements Runnable {
                     json = (String) item;
                     wrapper = mapper.readValue(json, ObjectNode.class);
                     datasift = mapper.convertValue(wrapper.get("data"), Datasift.class);
+                    json = mapper.writeValueAsString(datasift);
                 } else if( item instanceof Interaction ) {
                     datasift = mapper.convertValue(item, Datasift.class);
                     json = mapper.writeValueAsString(datasift);

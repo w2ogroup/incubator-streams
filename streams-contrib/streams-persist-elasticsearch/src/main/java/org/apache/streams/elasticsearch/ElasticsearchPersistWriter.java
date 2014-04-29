@@ -7,6 +7,7 @@ import com.google.common.base.Preconditions;
 import com.typesafe.config.Config;
 import org.apache.streams.config.StreamsConfigurator;
 import org.apache.streams.core.*;
+import org.apache.streams.data.util.RFC3339Utils;
 import org.apache.streams.jackson.StreamsJacksonMapper;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
@@ -17,6 +18,7 @@ import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.Client;
@@ -24,6 +26,8 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -118,13 +122,14 @@ public class ElasticsearchPersistWriter implements StreamsPersistWriter, Flushab
         String json;
         try {
             String id = streamsDatum.getId();
+            String ts = Long.toString(streamsDatum.getTimestamp().getMillis());
             if( streamsDatum.getDocument() instanceof String )
                 json = streamsDatum.getDocument().toString();
             else {
                 json = mapper.writeValueAsString(streamsDatum.getDocument());
             }
 
-            add(config.getIndex(), config.getType(), id, json);
+            add(config.getIndex(), config.getType(), id, json, ts);
 
         } catch (Exception e) {
             LOGGER.warn("{} {}", e.getMessage());
@@ -333,20 +338,24 @@ public class ElasticsearchPersistWriter implements StreamsPersistWriter, Flushab
 
     public void add(String indexName, String type, String json)
     {
-        add(indexName, type, null, json);
+        add(indexName, type, null, json, null);
     }
 
-    public void add(String indexName, String type, String id, String json)
+    public void add(String indexName, String type, String id, String json, String ts)
     {
-        IndexRequest indexRequest;
+        IndexRequestBuilder indexRequestBuilder = new IndexRequestBuilder(manager.getClient());
 
-        // They didn't specify an ID, so we will create one for them.
-        if(id == null)
-            indexRequest = new IndexRequest(indexName, type);
-        else
-            indexRequest = new IndexRequest(indexName, type, id);
+        indexRequestBuilder.setIndex(indexName);
+        indexRequestBuilder.setType(type);
 
-        indexRequest.source(json);
+        indexRequestBuilder.setSource(json);
+
+        // / They didn't specify an ID, so we will create one for them.
+        if(id != null)
+            indexRequestBuilder.setId(id);
+
+        if(ts != null)
+            indexRequestBuilder.setTimestamp(ts);
 
         // If there is a parentID that is associated with this bulk, then we are
         // going to have to parse the raw JSON and attempt to dereference
@@ -357,7 +366,7 @@ public class ElasticsearchPersistWriter implements StreamsPersistWriter, Flushab
             {
                 // The JSONObject constructor can throw an exception, it is called
                 // out explicitly here so we can catch it.
-                indexRequest = indexRequest.parent(new JSONObject(json).getString(parentID));
+                indexRequestBuilder.setParent(new JSONObject(json).getString(parentID));
             }
             catch(JSONException e)
             {
@@ -365,7 +374,7 @@ public class ElasticsearchPersistWriter implements StreamsPersistWriter, Flushab
                 totalFailed++;
             }
         }
-        add(indexRequest);
+        add(indexRequestBuilder.request());
     }
 
     public void add(UpdateRequest updateRequest)
@@ -479,22 +488,23 @@ public class ElasticsearchPersistWriter implements StreamsPersistWriter, Flushab
             }
         }
     }
-    public void add(String indexName, String type, Map<String, Object> toImport)
-    {
-        for (String id : toImport.keySet())
-            add(indexName, type, id, (String)toImport.get(id));
-    }
 
-    private void checkThenAddBatch(String index, String type, Map<String, String> workingBatch)
-    {
-        Set<String> invalidIDs = checkIds(workingBatch.keySet(), index, type);
-
-        for(String toAddId : workingBatch.keySet())
-            if(!invalidIDs.contains(toAddId))
-                add(index, type, toAddId, workingBatch.get(toAddId));
-
-        LOGGER.info("Adding Batch: {} -> {}", workingBatch.size(), invalidIDs.size());
-    }
+//    public void add(String indexName, String type, Map<String, Object> toImport)
+//    {
+//        for (String id : toImport.keySet())
+//            add(indexName, type, id, (String)toImport.get(id));
+//    }
+//
+//    private void checkThenAddBatch(String index, String type, Map<String, String> workingBatch)
+//    {
+//        Set<String> invalidIDs = checkIds(workingBatch.keySet(), index, type);
+//
+//        for(String toAddId : workingBatch.keySet())
+//            if(!invalidIDs.contains(toAddId))
+//                add(index, type, toAddId, workingBatch.get(toAddId));
+//
+//        LOGGER.info("Adding Batch: {} -> {}", workingBatch.size(), invalidIDs.size());
+//    }
 
 
     private Set<String> checkIds(Set<String> input, String index, String type) {

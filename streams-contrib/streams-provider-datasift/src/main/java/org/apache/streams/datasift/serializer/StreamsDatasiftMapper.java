@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.apache.streams.data.util.RFC3339Utils;
+import org.apache.streams.jackson.StreamsDateTimeDeserializer;
 import org.apache.streams.jackson.StreamsJacksonMapper;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -32,7 +34,12 @@ public class StreamsDatasiftMapper extends StreamsJacksonMapper {
             {
                 addDeserializer(DateTime.class, new StdDeserializer<DateTime>(DateTime.class) {
                     @Override
-                    public DateTime deserialize(JsonParser jpar, DeserializationContext context) throws IOException, JsonProcessingException {
+                    public DateTime deserialize(JsonParser jpar, DeserializationContext context) throws IOException {
+                        DateTime dateTime;
+                        try {
+                            dateTime = RFC3339Utils.getInstance().parseUTC(jpar.getValueAsString());
+                            return dateTime;
+                        } catch( Exception e ) {};
                         return DATASIFT_FORMAT.parseDateTime(jpar.getValueAsString());
                     }
                 });

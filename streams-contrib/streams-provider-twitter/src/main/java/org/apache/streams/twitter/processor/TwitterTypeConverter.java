@@ -43,10 +43,15 @@ public class TwitterTypeConverter implements StreamsProcessor {
 
     public final static String TERMINATE = new String("TERMINATE");
 
+    public TwitterTypeConverter() {
+        // for pig
+    }
+
     public TwitterTypeConverter(Class inClass, Class outClass) {
         this.inClass = inClass;
         this.outClass = outClass;
     }
+
 
     public Queue<StreamsDatum> getProcessorOutputQueue() {
         return outQueue;
@@ -175,9 +180,19 @@ public class TwitterTypeConverter implements StreamsProcessor {
     }
 
     @Override
-    public void prepare(Object o) {
+    public void prepare(Object configurationObject) {
         mapper = new StreamsTwitterMapper();
         twitterJsonActivitySerializer = new TwitterJsonActivitySerializer();
+        if( configurationObject instanceof String[] ) {
+            // for pig
+            String[] prepareArgs = (String[]) configurationObject;
+            try {
+                inClass = Class.forName(prepareArgs[0]);
+                outClass = Class.forName(prepareArgs[1]);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

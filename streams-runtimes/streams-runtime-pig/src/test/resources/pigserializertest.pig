@@ -1,7 +1,10 @@
-DEFINE SERIALIZER org.apache.streams.pig.StreamsSerializerExec('org.apache.streams.twitter.serializer.TwitterJsonActivitySerializer');
+DEFINE SERIALIZER org.apache.streams.pig.StreamsSerializerExec('org.apache.streams.twitter.serializer.TwitterJsonTweetActivitySerializer');
 
 tweets = LOAD 'src/main/resources/serializertestin.txt' USING PigStorage('\t') AS (activityid: chararray, source: chararray, timestamp: long, object: chararray);
 
-activities = FOREACH tweets GENERATE activityid, source, timestamp, SERIALIZER(object);
+activities = FOREACH tweets {
+    result = SERIALIZER(object);
+    GENERATE activityid, source, timestamp, result;
+}
 
-STORE activities INTO 'target/tweets-activities';
+STORE activities INTO 'target/tweets-activities' USING PigStorage('\t');

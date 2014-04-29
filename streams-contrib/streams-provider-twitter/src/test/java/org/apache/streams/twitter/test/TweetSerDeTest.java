@@ -45,8 +45,6 @@ public class TweetSerDeTest {
     public void Tests()
     {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.TRUE);
-        mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, Boolean.TRUE);
-        mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, Boolean.TRUE);
 
         InputStream is = TweetSerDeTest.class.getResourceAsStream("/testtweets.txt");
         InputStreamReader isr = new InputStreamReader(is);
