@@ -63,7 +63,7 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
 
     public TwitterTimelineProvider() {
         Config config = StreamsConfigurator.config.getConfig("twitter");
-        this.config = TwitterStreamConfigurator.detectTwitterStreamConfiguration(config);
+        this.config = TwitterStreamConfigurator.detectConfiguration(config);
 
     }
 
@@ -73,7 +73,7 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
 
     public TwitterTimelineProvider(Class klass) {
         Config config = StreamsConfigurator.config.getConfig("twitter");
-        this.config = TwitterStreamConfigurator.detectTwitterStreamConfiguration(config);
+        this.config = TwitterStreamConfigurator.detectConfiguration(config);
         this.klass = klass;
     }
 

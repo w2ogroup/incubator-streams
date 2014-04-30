@@ -75,7 +75,7 @@ public class TwitterStreamProvider implements StreamsProvider, Serializable {
 
     public TwitterStreamProvider() {
         Config config = StreamsConfigurator.config.getConfig("twitter");
-        this.config = TwitterStreamConfigurator.detectTwitterStreamConfiguration(config);
+        this.config = TwitterStreamConfigurator.detectConfiguration(config);
     }
 
     public TwitterStreamProvider(TwitterStreamConfiguration config) {
@@ -84,7 +84,7 @@ public class TwitterStreamProvider implements StreamsProvider, Serializable {
 
     public TwitterStreamProvider(Class klass) {
         Config config = StreamsConfigurator.config.getConfig("twitter");
-        this.config = TwitterStreamConfigurator.detectTwitterStreamConfiguration(config);
+        this.config = TwitterStreamConfigurator.detectConfiguration(config);
         this.klass = klass;
         providerQueue = new LinkedBlockingQueue<StreamsDatum>();
     }

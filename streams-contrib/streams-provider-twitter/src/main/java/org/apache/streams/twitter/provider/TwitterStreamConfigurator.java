@@ -47,7 +47,7 @@ public class TwitterStreamConfigurator {
         return twitterConfiguration;
     }
 
-    public static TwitterStreamConfiguration detectTwitterStreamConfiguration(Config config) {
+    public static TwitterStreamConfiguration detectConfiguration(Config config) {
 
         TwitterStreamConfiguration twitterStreamConfiguration = mapper.convertValue(detectTwitterConfiguration(config), TwitterStreamConfiguration.class);
 
