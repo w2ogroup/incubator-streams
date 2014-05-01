@@ -27,7 +27,7 @@ public class S3PersistWriter implements StreamsPersistWriter, DatumStatusCountab
 
     private final static char DELIMITER = '\t';
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper;
     private AmazonS3Client amazonS3Client;
     private S3WriterConfiguration s3WriterConfiguration;
     private final List<String> writtenFiles = new ArrayList<String>();
@@ -54,6 +54,8 @@ public class S3PersistWriter implements StreamsPersistWriter, DatumStatusCountab
     public List<String> getWrittenFiles()                               { return this.writtenFiles; }
     public Map<String, String> getObjectMetaData()                      { return this.objectMetaData; }
     public ObjectMapper getObjectMapper()                               { return this.objectMapper; }
+
+    public void setObjectMapper(ObjectMapper mapper)                    { this.objectMapper = mapper; }
     public void setObjectMetaData(Map<String, String> val)              { this.objectMetaData = val; }
 
     /**
@@ -77,7 +79,7 @@ public class S3PersistWriter implements StreamsPersistWriter, DatumStatusCountab
         synchronized (this)
         {
             // Check to see if we need to reset the file that we are currently working with
-            if (this.currentWriter == null || (this.fileLineCounter.get() >= this.s3WriterConfiguration.getLinesPerFile())) {
+            if (this.currentWriter == null || ( this.bytesWrittenThisFile.get()  >= (this.s3WriterConfiguration.getMaxFileSize() * 1024 * 1024))) {
                 try {
                     LOGGER.info("Resetting the file");
                     this.currentWriter = resetFile();
@@ -120,7 +122,7 @@ public class S3PersistWriter implements StreamsPersistWriter, DatumStatusCountab
         {
             // generate a file name
             String fileName = this.s3WriterConfiguration.getWriterFilePrefix() +
-                    (this.s3WriterConfiguration.getChuck() ? "/" : "-") + new Date().getTime() + ".tsv";
+                    (this.s3WriterConfiguration.getChunk() ? "/" : "-") + new Date().getTime() + ".tsv";
 
             // create the output stream
             OutputStream outputStream = new S3OutputStreamWrapper(this.amazonS3Client,
@@ -157,7 +159,7 @@ public class S3PersistWriter implements StreamsPersistWriter, DatumStatusCountab
             this.currentWriter = null;
 
             //
-            LOGGER.debug("File Closed: Records[{}] Bytes[{}] {} ", this.fileLineCounter.get(), this.bytesWrittenThisFile.get(), this.writtenFiles.get(this.writtenFiles.size()-1));
+            LOGGER.info("File Closed: Records[{}] Bytes[{}] {} ", this.fileLineCounter.get(), this.bytesWrittenThisFile.get(), this.writtenFiles.get(this.writtenFiles.size()-1));
         }
     }
 
@@ -219,6 +221,11 @@ public class S3PersistWriter implements StreamsPersistWriter, DatumStatusCountab
     public void prepare(Object configurationObject) {
         // Connect to S3
         synchronized (this) {
+
+            // if the user has chosen to not set the object mapper, then set a default object mapper for them.
+            if(this.objectMapper == null)
+                this.objectMapper = new ObjectMapper();
+
             // Create the credentials Object
             if(this.amazonS3Client == null)
             {
@@ -238,7 +245,6 @@ public class S3PersistWriter implements StreamsPersistWriter, DatumStatusCountab
     }
 
     public void cleanUp() {
-        LOGGER.info("Cleaning up persist writer");
         closeAndDestroyWriter();
     }
 

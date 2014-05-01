@@ -14,11 +14,12 @@
             "type": "string",
             "description": "File Prefix"
         },
-        "linesPerFile": {
+        "maxFileSize": {
             "type": "integer",
-            "description": "The number of records that you want in each file"
+            "default" : 20,
+            "description": "If files are elected to be 'chunked' which they are by default, this is the maximum size of that file before the byte array stream is vacated and the file is created."
         },
-        "chuck": {
+        "chunk": {
             "type": "boolean",
             "default" : true,
             "description": "Whether you want the file chunked inside of a folder or not"

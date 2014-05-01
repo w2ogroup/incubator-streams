@@ -52,8 +52,11 @@ public class S3Configurator {
         s3WriterConfiguration.setWriterPath(rootPath + (rootPath.endsWith("/") ? "" : "/"));
 
         s3WriterConfiguration.setWriterFilePrefix(s3.hasPath("writerFilePrefix") ? s3.getString("writerFilePrefix") : "default");
-        s3WriterConfiguration.setLinesPerFile(s3.hasPath("linesPerFile") ? (long)s3.getInt("linesPerFile") : 1000);
-        s3WriterConfiguration.setChuck(!s3.hasPath("chunk") || s3.getBoolean("chunk"));
+
+        if(s3.hasPath("maxFileSize"))
+            s3WriterConfiguration.setMaxFileSize((long)s3.getInt("maxFileSize"));
+        if(s3.hasPath("chunk"))
+            s3WriterConfiguration.setChunk(s3.getBoolean("chunk"));
 
         return s3WriterConfiguration;
     }
