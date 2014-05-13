@@ -11,6 +11,7 @@ import org.apache.streams.core.StreamsDatum;
 import org.apache.streams.core.StreamsProvider;
 import org.apache.streams.core.StreamsResultSet;
 import org.apache.streams.twitter.TwitterStreamConfiguration;
+import org.apache.streams.util.ComponentUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +104,7 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
 
             // keep trying to load, give it 5 attempts.
             //while (keepTrying < 10)
-            while (keepTrying < 1)
+            while (keepTrying < 5)
             {
 
                 try
@@ -113,9 +114,7 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
                     for (Status tStat : statuses) {
                         String json = TwitterObjectFactory.getRawJSON(tStat);
 
-                        while(!providerQueue.offer(new StreamsDatum(json))) {
-                            sleep();
-                        }
+                        ComponentUtils.offerUntilSuccess(new StreamsDatum(json), providerQueue);
                     }
 
                     paging.setPage(paging.getPage() + 1);
