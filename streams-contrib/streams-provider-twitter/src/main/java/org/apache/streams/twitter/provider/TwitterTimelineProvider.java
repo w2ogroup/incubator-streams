@@ -6,11 +6,13 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.typesafe.config.Config;
 import org.apache.streams.config.StreamsConfigurator;
+import org.apache.streams.core.DatumStatusCounter;
 import org.apache.streams.core.StreamsDatum;
 import org.apache.streams.core.StreamsProvider;
 import org.apache.streams.core.StreamsResultSet;
@@ -27,6 +29,8 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by sblackmon on 12/10/13.
@@ -40,6 +44,7 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
     private TwitterStreamConfiguration config;
 
     private Class klass;
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public TwitterStreamConfiguration getConfig() {
         return config;
@@ -55,10 +60,6 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
     protected Iterator<Long> ids;
 
     ListenableFuture providerTaskComplete;
-//
-//    public BlockingQueue<Object> getInQueue() {
-//        return inQueue;
-//    }
 
     protected ListeningExecutorService executor;
 
@@ -95,29 +96,6 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
         return this.providerQueue;
     }
 
-//    public void run() {
-//
-//        LOGGER.info("{} Running", STREAMS_ID);
-//
-//        while( ids.hasNext() ) {
-//            Long currentId = ids.next();
-//            LOGGER.info("Provider Task Starting: {}", currentId);
-//            captureTimeline(currentId);
-//        }
-//
-//        LOGGER.info("{} Finished.  Cleaning up...", STREAMS_ID);
-//
-//        client.shutdown();
-//
-//        LOGGER.info("{} Exiting", STREAMS_ID);
-//
-//        while(!providerTaskComplete.isDone() && !providerTaskComplete.isCancelled() ) {
-//            try {
-//                Thread.sleep(100);
-//            } catch (InterruptedException e) {}
-//        }
-//    }
-
     @Override
     public void startStream() {
         // no op
@@ -135,8 +113,7 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
             int keepTrying = 0;
 
             // keep trying to load, give it 5 attempts.
-            //while (keepTrying < 10)
-            while (keepTrying < 1)
+            while (keepTrying < 5)
             {
 
                 try
@@ -145,14 +122,6 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
 
                     for (Status tStat : statuses)
                     {
-//                        if( provider.start != null &&
-//                                provider.start.isAfter(new DateTime(tStat.getCreatedAt())))
-//                        {
-//                            // they hit the last date we wanted to collect
-//                            // we can now exit early
-//                            KeepGoing = false;
-//                        }
-                        // emit the record
                         String json = DataObjectFactory.getRawJSON(tStat);
 
                         providerQueue.offer(new StreamsDatum(json));
@@ -184,6 +153,7 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
     public StreamsResultSet readCurrent() {
 
         Preconditions.checkArgument(ids.hasNext());
+        StreamsResultSet result;
 
         LOGGER.info("readCurrent");
 
@@ -197,12 +167,23 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
 
         LOGGER.info("Providing {} docs", providerQueue.size());
 
-        StreamsResultSet result =  new StreamsResultSet(providerQueue);
+        try {
+            lock.writeLock().lock();
+            result = new StreamsResultSet(providerQueue);
+            result.setCounter(new DatumStatusCounter());
+            providerQueue = constructQueue();
+        } finally {
+            lock.writeLock().unlock();
+        }
 
         LOGGER.info("Exiting");
 
         return result;
 
+    }
+
+    private Queue<StreamsDatum> constructQueue() {
+        return Queues.synchronizedQueue(new LinkedBlockingQueue<StreamsDatum>(10000));
     }
 
     public StreamsResultSet readNew(BigInteger sequence) {
