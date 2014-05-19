@@ -32,7 +32,7 @@ public class StreamsProviderTask extends BaseStreamsTask implements DatumStatusC
     private static final int START = 0;
     private static final int END = 1;
 
-    private static final int DEFAULT_TIMEOUT_MS = 30000;
+    private static final int DEFAULT_TIMEOUT_MS = 1000000;
 
     private StreamsProvider provider;
     private AtomicBoolean keepRunning;
@@ -42,6 +42,7 @@ public class StreamsProviderTask extends BaseStreamsTask implements DatumStatusC
     private Map<String, Object> config;
     private AtomicBoolean isRunning;
 
+    private int timeout;
     private int zeros = 0;
     private DatumStatusCounter statusCounter = new DatumStatusCounter();
 
@@ -57,6 +58,7 @@ public class StreamsProviderTask extends BaseStreamsTask implements DatumStatusC
             this.type = Type.READ_CURRENT;
         this.keepRunning = new AtomicBoolean(true);
         this.isRunning = new AtomicBoolean(true);
+        this.timeout = DEFAULT_TIMEOUT_MS;
     }
 
     /**
@@ -70,6 +72,7 @@ public class StreamsProviderTask extends BaseStreamsTask implements DatumStatusC
         this.sequence = sequence;
         this.keepRunning = new AtomicBoolean(true);
         this.isRunning = new AtomicBoolean(true);
+        this.timeout = DEFAULT_TIMEOUT_MS;
     }
 
     /**
@@ -86,6 +89,11 @@ public class StreamsProviderTask extends BaseStreamsTask implements DatumStatusC
         this.dateRange[END] = end;
         this.keepRunning = new AtomicBoolean(true);
         this.isRunning = new AtomicBoolean(true);
+        this.timeout = DEFAULT_TIMEOUT_MS;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 
     @Override
@@ -103,6 +111,7 @@ public class StreamsProviderTask extends BaseStreamsTask implements DatumStatusC
         this.config = config;
     }
 
+
     @Override
     public void run() {
         try {
@@ -112,7 +121,7 @@ public class StreamsProviderTask extends BaseStreamsTask implements DatumStatusC
             switch(this.type) {
                 case PERPETUAL: {
                     provider.startStream();
-                    while(this.keepRunning.get() == true) {
+                    while(this.keepRunning.get()) {
                         try {
                             resultSet = provider.readCurrent();
                             if( resultSet.size() == 0 )
@@ -121,7 +130,8 @@ public class StreamsProviderTask extends BaseStreamsTask implements DatumStatusC
                                 zeros = 0;
                             }
                             flushResults(resultSet);
-                            if( zeros > (DEFAULT_TIMEOUT_MS / DEFAULT_SLEEP_TIME_MS))
+                            // the way this works needs to change...
+                            if( zeros > (timeout))
                                 this.keepRunning.set(false);
                             Thread.sleep(DEFAULT_SLEEP_TIME_MS);
                         } catch (InterruptedException e) {
@@ -149,6 +159,7 @@ public class StreamsProviderTask extends BaseStreamsTask implements DatumStatusC
         }
     }
 
+    @Override
     public boolean isRunning() {
         return this.isRunning.get();
     }

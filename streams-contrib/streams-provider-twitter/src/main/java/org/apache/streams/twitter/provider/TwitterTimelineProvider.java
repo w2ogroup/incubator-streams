@@ -17,6 +17,7 @@ import org.apache.streams.core.StreamsDatum;
 import org.apache.streams.core.StreamsProvider;
 import org.apache.streams.core.StreamsResultSet;
 import org.apache.streams.twitter.TwitterStreamConfiguration;
+import org.apache.streams.util.ComponentUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +27,20 @@ import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.json.DataObjectFactory;
 
 import java.io.Serializable;
+import java.lang.Math;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by sblackmon on 12/10/13.
@@ -54,8 +64,9 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
         this.config = config;
     }
 
-    protected volatile Queue<StreamsDatum> providerQueue = new LinkedBlockingQueue<StreamsDatum>();
+    protected volatile Queue<StreamsDatum> providerQueue;
 
+    protected int idsCount;
     protected Twitter client;
     protected Iterator<Long> ids;
 
@@ -65,6 +76,9 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
 
     protected DateTime start;
     protected DateTime end;
+
+    Boolean jsonStoreEnabled;
+    Boolean includeEntitiesEnabled;
 
     private static ExecutorService newFixedThreadPoolWithQueueSize(int nThreads, int queueSize) {
         return new ThreadPoolExecutor(nThreads, nThreads,
@@ -98,10 +112,11 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
 
     @Override
     public void startStream() {
-        // no op
+        LOGGER.debug("{} startStream", STREAMS_ID);
+        throw new org.apache.commons.lang.NotImplementedException();
     }
 
-    private void captureTimeline(long currentId) {
+    protected void captureTimeline(long currentId) {
 
         Paging paging = new Paging(1, 200);
         List<Status> statuses = null;
@@ -119,13 +134,9 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
                 try
                 {
                     statuses = client.getUserTimeline(currentId, paging);
-
-                    for (Status tStat : statuses)
-                    {
-                        String json = DataObjectFactory.getRawJSON(tStat);
-
-                        providerQueue.offer(new StreamsDatum(json));
-
+                    for (Status tStat : statuses) {
+                        String json = TwitterObjectFactory.getRawJSON(tStat);
+                        ComponentUtils.offerUntilSuccess(new StreamsDatum(json), providerQueue);
                     }
 
                     paging.setPage(paging.getPage() + 1);
@@ -135,32 +146,54 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
                 catch(TwitterException twitterException) {
                     keepTrying += TwitterErrorHandler.handleTwitterError(client, twitterException);
                 }
-                catch(Exception e)
-                {
-                    hadFailure = true;
+                catch(Exception e) {
                     keepTrying += TwitterErrorHandler.handleTwitterError(client, e);
-                }
-                finally
-                {
-                    // Shutdown the twitter to release the resources
-                    client.shutdown();
                 }
             }
         }
-        while ((statuses != null) && (statuses.size() > 0) && KeepGoing);
+        while (shouldContinuePulling(statuses));
+    }
+
+    private Map<Long, Long> userPullInfo;
+
+    protected boolean shouldContinuePulling(List<Status> statuses) {
+        return (statuses != null) && (statuses.size() > 0);
+    }
+
+    private void sleep()
+    {
+        Thread.yield();
+        try {
+            // wait one tenth of a millisecond
+            Thread.yield();
+            Thread.sleep(1);
+            Thread.yield();
+        }
+        catch(IllegalArgumentException e) {
+            // passing in static values, this will never happen
+        }
+        catch(InterruptedException e) {
+            // noOp, there must have been an issue sleeping
+        }
+        Thread.yield();
     }
 
     public StreamsResultSet readCurrent() {
+        LOGGER.debug("{} readCurrent", STREAMS_ID);
 
         Preconditions.checkArgument(ids.hasNext());
         StreamsResultSet result;
 
-        LOGGER.info("readCurrent");
+        StreamsResultSet current;
 
-        while( ids.hasNext() ) {
-            Long currentId = ids.next();
-            LOGGER.info("Provider Task Starting: {}", currentId);
-            captureTimeline(currentId);
+        synchronized( TwitterTimelineProvider.class ) {
+
+            while( ids.hasNext() ) {
+                Long currentId = ids.next();
+                LOGGER.info("Provider Task Starting: {}", currentId);
+                captureTimeline(currentId);
+            }
+
         }
 
         LOGGER.info("Finished.  Cleaning up...");
@@ -193,11 +226,7 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
 
     public StreamsResultSet readRange(DateTime start, DateTime end) {
         LOGGER.debug("{} readRange", STREAMS_ID);
-        this.start = start;
-        this.end = end;
-        readCurrent();
-        StreamsResultSet result = (StreamsResultSet)providerQueue.iterator();
-        return result;
+        throw new NotImplementedException();
     }
 
     void shutdownAndAwaitTermination(ExecutorService pool) {
@@ -225,21 +254,25 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
         executor = MoreExecutors.listeningDecorator(newFixedThreadPoolWithQueueSize(5, 20));
 
         Preconditions.checkNotNull(providerQueue);
-
         Preconditions.checkNotNull(this.klass);
-
         Preconditions.checkNotNull(config.getOauth().getConsumerKey());
         Preconditions.checkNotNull(config.getOauth().getConsumerSecret());
         Preconditions.checkNotNull(config.getOauth().getAccessToken());
         Preconditions.checkNotNull(config.getOauth().getAccessTokenSecret());
-
         Preconditions.checkNotNull(config.getFollow());
 
-        Boolean jsonStoreEnabled = Optional.fromNullable(new Boolean(Boolean.parseBoolean(config.getJsonStoreEnabled()))).or(true);
-        Boolean includeEntitiesEnabled = Optional.fromNullable(new Boolean(Boolean.parseBoolean(config.getIncludeEntities()))).or(true);
-
+        idsCount = config.getFollow().size();
         ids = config.getFollow().iterator();
 
+        jsonStoreEnabled = Optional.fromNullable(new Boolean(Boolean.parseBoolean(config.getJsonStoreEnabled()))).or(true);
+        includeEntitiesEnabled = Optional.fromNullable(new Boolean(Boolean.parseBoolean(config.getIncludeEntities()))).or(true);
+
+        client = getTwitterClient();
+    }
+
+    
+    protected Twitter getTwitterClient()
+    {
         String baseUrl = "https://api.twitter.com:443/1.1/";
 
         ConfigurationBuilder builder = new ConfigurationBuilder()
@@ -252,18 +285,13 @@ public class TwitterTimelineProvider implements StreamsProvider, Serializable {
                 .setAsyncNumThreads(3)
                 .setRestBaseURL(baseUrl)
                 .setIncludeMyRetweetEnabled(Boolean.TRUE)
-                .setIncludeRTsEnabled(Boolean.TRUE)
                 .setPrettyDebugEnabled(Boolean.TRUE);
 
-        client = new TwitterFactory(builder.build()).getInstance();
-
+        return new TwitterFactory(builder.build()).getInstance();
     }
 
     @Override
     public void cleanUp() {
-
-        client.shutdown();
-
         shutdownAndAwaitTermination(executor);
     }
 }

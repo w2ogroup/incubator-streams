@@ -19,7 +19,11 @@ import org.apache.streams.urls.LinkDetails;
 import twitter4j.HashtagEntity;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.streams.twitter.serializer.TwitterJsonActivitySerializer.*;
 import static org.apache.streams.data.util.ActivityUtil.ensureExtensions;
@@ -31,11 +35,7 @@ import static org.apache.streams.data.util.ActivityUtil.ensureExtensions;
 * Time: 9:24 AM
 * To change this template use File | Settings | File Templates.
 */
-public class TwitterJsonTweetActivitySerializer implements ActivitySerializer<String> {
-
-    public TwitterJsonTweetActivitySerializer() {
-
-    }
+public class TwitterJsonTweetActivitySerializer implements ActivitySerializer<String>, Serializable {
 
     @Override
     public String serializationFormat() {
@@ -62,7 +62,7 @@ public class TwitterJsonTweetActivitySerializer implements ActivitySerializer<St
 
         Activity activity = new Activity();
 
-        activity.setActor(buildActor(tweet));
+        activity.setActor(buildActorTweet(tweet));
         activity.setVerb("post");
         activity.setId(formatId(activity.getVerb(),
                 Optional.fromNullable(
@@ -80,7 +80,7 @@ public class TwitterJsonTweetActivitySerializer implements ActivitySerializer<St
         activity.setProvider(getProvider());
         activity.setTitle("");
         activity.setContent(tweet.getText());
-        activity.setUrl("http://twitter.com/" + tweet.getIdStr());
+        activity.setUrl("http://twitter.com/" + tweet.getUser().getIdStr() + "/status/" + tweet.getIdStr());
         activity.setLinks(getLinks(tweet));
 
         addTwitterExtension(activity, mapper.convertValue(tweet, ObjectNode.class));
@@ -136,27 +136,13 @@ public class TwitterJsonTweetActivitySerializer implements ActivitySerializer<St
             urls.add(linkDetails);
         }
         extensions.put("urls", urls);
+
+        extensions.put("keywords", tweet.getText());
     }
 
     @Override
     public List<Activity> deserializeAll(List<String> serializedList) {
         return null;
-    }
-
-    public static Actor buildActor(Tweet tweet) {
-        Actor actor = new Actor();
-        User user = tweet.getUser();
-        actor.setId(formatId(
-                Optional.fromNullable(
-                        user.getIdStr())
-                        .or(Optional.of(user.getId().toString()))
-                        .orNull()
-        ));
-        actor.setDisplayName(user.getScreenName());
-        if (user.getUrl()!=null){
-            actor.setUrl(user.getUrl());
-        }
-        return actor;
     }
 
     public static List<String> getLinks(Tweet tweet) {

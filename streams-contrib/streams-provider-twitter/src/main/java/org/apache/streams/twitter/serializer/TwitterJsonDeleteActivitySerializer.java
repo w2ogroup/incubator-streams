@@ -13,6 +13,7 @@ import org.apache.streams.pojo.json.Actor;
 import org.apache.streams.twitter.pojo.Delete;
 import org.apache.streams.twitter.pojo.Tweet;
 
+import java.io.Serializable;
 import java.util.List;
 
 import static org.apache.streams.twitter.serializer.TwitterJsonActivitySerializer.*;
@@ -24,7 +25,7 @@ import static org.apache.streams.twitter.serializer.TwitterJsonActivitySerialize
 * Time: 9:24 AM
 * To change this template use File | Settings | File Templates.
 */
-public class TwitterJsonDeleteActivitySerializer implements ActivitySerializer<String> {
+public class TwitterJsonDeleteActivitySerializer implements ActivitySerializer<String>, Serializable {
 
     @Override
     public String serializationFormat() {
