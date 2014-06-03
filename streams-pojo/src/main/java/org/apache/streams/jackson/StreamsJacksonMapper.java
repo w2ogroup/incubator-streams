@@ -31,7 +31,7 @@ public class StreamsJacksonMapper extends ObjectMapper {
     public StreamsJacksonMapper() {
         super();
         registerModule(new StreamsJacksonModule());
-        disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        //disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, Boolean.TRUE);
         configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, Boolean.TRUE);
         configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, Boolean.TRUE);
