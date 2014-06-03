@@ -16,7 +16,7 @@ public class DatasiftActivitySerializer implements ActivitySerializer<Datasift> 
 
     private static final DatasiftTweetActivitySerializer TWITTER_SERIALIZER = new DatasiftTweetActivitySerializer();
     private static final DatasiftDefaultActivitySerializer DEFAULT_SERIALIZER = new DatasiftDefaultActivitySerializer();
-    private static final ObjectMapper MAPPER = StreamsJacksonMapper.getInstance();
+    private static final ObjectMapper MAPPER = StreamsDatasiftMapper.getInstance();
 
     @Override
     public String serializationFormat() {

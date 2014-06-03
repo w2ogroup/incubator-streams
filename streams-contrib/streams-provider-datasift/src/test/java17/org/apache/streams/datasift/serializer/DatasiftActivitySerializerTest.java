@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 public class DatasiftActivitySerializerTest {
 
     private static final DatasiftActivitySerializer SERIALIZER = new DatasiftActivitySerializer();
-    private static final ObjectMapper MAPPER = StreamsJacksonMapper.getInstance();
+    private static final ObjectMapper MAPPER = StreamsDatasiftMapper.getInstance();
 
     @Test
     public void testGeneralConversion() throws Exception {

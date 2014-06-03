@@ -32,9 +32,7 @@ public class DatasiftDefaultActivitySerializer implements ActivitySerializer<Dat
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasiftDefaultActivitySerializer.class);
 
-    public static final String DATE_FORMAT = "EEE MMM dd HH:mm:ss Z yyyy";
-
-    ObjectMapper mapper = StreamsJacksonMapper.getInstance();
+    ObjectMapper mapper = StreamsDatasiftMapper.getInstance();
 
     @Override
     public String serializationFormat() {

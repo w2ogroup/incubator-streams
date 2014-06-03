@@ -25,6 +25,7 @@ import org.apache.streams.core.StreamsDatum;
 import org.apache.streams.core.StreamsProcessor;
 import org.apache.streams.datasift.Datasift;
 import org.apache.streams.datasift.serializer.DatasiftActivitySerializer;
+import org.apache.streams.datasift.serializer.StreamsDatasiftMapper;
 import org.apache.streams.jackson.StreamsJacksonMapper;
 import org.apache.streams.pojo.json.Activity;
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ public class DatasiftTypeConverterProcessor implements StreamsProcessor {
 
     @Override
     public void prepare(Object configurationObject) {
-        this.mapper = StreamsJacksonMapper.getInstance();
+        this.mapper = StreamsDatasiftMapper.getInstance();
         this.datasiftInteractionActivitySerializer = new DatasiftActivitySerializer();
         if(this.outClass.equals(Activity.class)) {
             this.converter = new ActivityConverter();

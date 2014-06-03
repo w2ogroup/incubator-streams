@@ -25,7 +25,7 @@ public class DatasiftSerDeTest {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DatasiftSerDeTest.class);
 
-    private ObjectMapper mapper = StreamsJacksonMapper.getInstance();
+    private ObjectMapper mapper = StreamsDatasiftMapper.getInstance();
 
 
 
