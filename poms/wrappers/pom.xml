@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.streams.build</groupId>
     <artifactId>shared-plugin-settings</artifactId>
-    <version>0.1.2-W2O</version>
+    <version>0.1.2-W2O-HF1</version>
   </parent>
 
   <artifactId>wrapper-bundle-settings</artifactId>

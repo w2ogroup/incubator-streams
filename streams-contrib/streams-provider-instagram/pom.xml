@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.apache.streams</groupId>
         <artifactId>streams-contrib</artifactId>
-        <version>0.1.2-W2O</version>
+        <version>0.1.2-W2O-HF1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.apache.streams</groupId>
             <artifactId>streams-util</artifactId>
-            <version>0.1.2-W2O</version>
+            <version>0.1.2-W2O-HF1</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

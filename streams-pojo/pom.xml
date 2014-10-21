@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.streams</groupId>
         <artifactId>streams-project</artifactId>
-        <version>0.1.2-W2O</version>
+        <version>0.1.2-W2O-HF1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
