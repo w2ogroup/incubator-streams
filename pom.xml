@@ -27,7 +27,7 @@
 
     <groupId>org.apache.streams</groupId>
     <artifactId>streams-project</artifactId>
-    <version>0.1.7-W2O-SNAPSHOT</version>
+    <version>0.1.7-W2O</version>
 
     <name>Apache Streams Project</name>
 
